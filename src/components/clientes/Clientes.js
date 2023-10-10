@@ -16,7 +16,7 @@ const Clientes = () => {
 
     useEffect(() => {
         consultarAPI()
-    }, [])
+    }, [clientes])
 
     return (
         <Fragment>
