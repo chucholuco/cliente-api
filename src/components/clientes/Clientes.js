@@ -2,6 +2,7 @@ import React, { useEffect, useState, Fragment } from 'react'
 import clienteAxios from '../../config/axios'
 import Cliente from './Cliente'
 import { Link } from 'react-router-dom'
+import Spinner from '../layout/Spinner'
 
 const Clientes = () => {  
     
@@ -11,12 +12,17 @@ const Clientes = () => {
     // Query a la API
     const consultarAPI = async () => {
         const clientesConsulta = await clienteAxios.get('/clientes')
-        guardarClientes(clientesConsulta.data)
+        setTimeout(() => {
+            guardarClientes(clientesConsulta.data)
+          }, 1000);
+        
     }
 
     useEffect(() => {
         consultarAPI()
     }, [clientes])
+
+    if (!clientes.length) return <Spinner />
 
     return (
         <Fragment>

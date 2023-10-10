@@ -1,6 +1,8 @@
 import React, { useEffect, useState, Fragment } from "react";
 import { Link } from "react-router-dom";
 import clienteAxios from "../../config/axios";
+import Producto from "./Producto";
+import Spinner from "../layout/Spinner";
 
 const Productos = () => {
 
@@ -9,10 +11,14 @@ const Productos = () => {
     useEffect(() => {
         const consultarAPI = async () => {
             const productosConsulta = await clienteAxios.get('/productos')    
-            guardarProductos(productosConsulta.data)        
+            setTimeout(() => {
+                guardarProductos(productosConsulta.data)   
+              }, 1000);                
         }
         consultarAPI()
-    }, [])
+    }, [productos])
+
+    if (!productos.length) return <Spinner />
 
   return (
     <Fragment>
@@ -24,23 +30,12 @@ const Productos = () => {
       </Link>
 
       <ul className="listado-productos">
-        <li className="producto">
-          <div className="info-producto">
-            <p className="nombre">VueJS</p>
-            <p className="precio">$25.00 </p>
-            <img src="img/1.jpg" />
-          </div>
-          <div className="acciones">
-            <a href="#" className="btn btn-azul">
-              <i className="fas fa-pen-alt"></i>
-              Editar Producto
-            </a>
-            <button type="button" className="btn btn-rojo btn-eliminar">
-              <i className="fas fa-times"></i>
-              Eliminar Cliente
-            </button>
-          </div>
-        </li>                
+            {productos.map(producto => (
+                <Producto 
+                    key={producto._id}
+                    producto={producto}
+                />
+            ))}     
       </ul>
     </Fragment>
   );
