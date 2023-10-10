@@ -1,13 +1,15 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import clienteAxios from "../../config/axios";
 
 
 
-function NuevoCliente() {
+function EditarCliente() {
 
-    const[cliente, guardarCliente] = useState({
+    const { id } = useParams()
+
+    const[cliente, datosCliente] = useState({
         nombre: '',
         apellido: '',
         empresa: '',
@@ -17,16 +19,25 @@ function NuevoCliente() {
 
     const navigate = useNavigate()
 
+    const consultarAPI = async () => {
+        const clienteConsulta = await clienteAxios.get(`/clientes/${id}`)        
+        datosCliente(clienteConsulta.data)
+    }
+
+    useEffect(() => {
+        consultarAPI()
+    }, [])
+
     const actualizarState = e => {        
-        guardarCliente({
+        datosCliente({
             ...cliente,
             [e.target.name]: e.target.value
         })
     }
 
-    const agregarCliente = e => {
+    const actualizarCliente = async e => {
         e.preventDefault()
-        clienteAxios.post('/clientes', cliente).then(res => {
+        await clienteAxios.put(`/clientes/${id}`, cliente).then(res => {
             if (res.data.code === 11000) {
                 Swal.fire({
                     type: 'error',
@@ -35,13 +46,13 @@ function NuevoCliente() {
                 })                   
             } else {                
                 Swal.fire(
-                    'Se agrego el Cliente',
-                    res.data.mensaje,
+                    'Correcto',
+                    'Se actualizo correctamente',
                     'success'
                   )
             }
+            navigate('/')
         })
-        navigate('/')
     }
 
     const validarCliente = () => {
@@ -53,9 +64,9 @@ function NuevoCliente() {
 
   return (
     <Fragment>
-      <h2>Nuevo Cliente</h2>
+      <h2>Editar Cliente</h2>
       <form
-        onSubmit={agregarCliente}
+        onSubmit={actualizarCliente}
       >
         <legend>Llena todos los campos</legend>
 
@@ -66,6 +77,7 @@ function NuevoCliente() {
                 placeholder="Nombre Cliente" 
                 name="nombre" 
                 onChange={actualizarState}
+                value={cliente.nombre}
             />
         </div>
 
@@ -76,6 +88,7 @@ function NuevoCliente() {
                 placeholder="Apellido Cliente" 
                 name="apellido" 
                 onChange={actualizarState}
+                value={cliente.apellido}
             />
         </div>
 
@@ -86,6 +99,7 @@ function NuevoCliente() {
                 placeholder="Empresa Cliente" 
                 name="empresa" 
                 onChange={actualizarState}
+                value={cliente.empresa}
             />
         </div>
 
@@ -96,6 +110,7 @@ function NuevoCliente() {
                 placeholder="Email Cliente" 
                 name="email" 
                 onChange={actualizarState}
+                value={cliente.email}
             />
         </div>
 
@@ -106,6 +121,7 @@ function NuevoCliente() {
                 placeholder="Teléfono Cliente" 
                 name="telefono" 
                 onChange={actualizarState}
+                value={cliente.telefono}
             />
         </div>
 
@@ -113,7 +129,7 @@ function NuevoCliente() {
           <input
             type="submit"
             className="btn btn-azul"
-            value="Agregar Cliente"
+            value="Guardar Cambios"
             disabled={validarCliente()}
           />
         </div>
@@ -122,4 +138,4 @@ function NuevoCliente() {
   );
 }
 
-export default NuevoCliente;
+export default EditarCliente;
