@@ -114,7 +114,7 @@ const EditarProducto = () => {
                 <label>Imagen:</label>
                 { 
                     imagen ? (
-                        <img src={`http://localhost:5000/${imagen}`} alt='imagen' width="300"/>
+                        <img src={`${process.env.REACT_APP_BACKEND_URL}/${imagen}`} alt='imagen' width="300"/>
                     ) :  null
                 }
                 <input 

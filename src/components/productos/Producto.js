@@ -39,7 +39,7 @@ const Producto = ({ producto }) => {
             <p className="precio">${precio} </p>
             { 
                 imagen ? (
-                <img src={`http://localhost:5000/${imagen}`} alt='imagen' />
+                <img src={`${process.env.REACT_APP_BACKEND_URL}/${imagen}`} alt='imagen' />
                 ) : null
             }
           </div>
