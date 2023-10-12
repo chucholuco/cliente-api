@@ -33,12 +33,20 @@ function Login() {
         )
         navigate('/')
     } catch (error) {
-        console.log(error)
-        Swal.fire({
+        if (error.response) {
+          Swal.fire({
             type: 'error',
             title: 'Hubo un error',
             text: error.response.data.mensaje
-        })
+          })
+        } else {
+          Swal.fire({
+            type: 'error',
+            title: 'Hubo un error',
+            text: 'Hubo un error'
+          })
+        }
+        
     }
   };
 
